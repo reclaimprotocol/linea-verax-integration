@@ -15,7 +15,7 @@ export default function AnonymousIndex () {
     refreshUsers()
     const interval = setInterval(() => {
       refreshUsers()
-    }, 2000)
+    }, 10000)
 
     return () => clearInterval(interval)
   }, [])

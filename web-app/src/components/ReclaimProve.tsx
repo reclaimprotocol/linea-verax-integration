@@ -24,7 +24,7 @@ function App () {
     if (isConnected && !isProofReceived) {
       console.log('Starting to fetch template.')
       handleGetTemplate()
-      const intervalId = setInterval(fetchProof, 4000)
+      const intervalId = setInterval(fetchProof, 5000)
       return () => {
         console.log('Template received/Remounted.')
         clearInterval(intervalId)
