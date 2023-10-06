@@ -47,11 +47,15 @@ EVM smart contract that enables the users to attest anonymously their claims wit
 - `NETWORK={network} npx hardhat upgrade --address {proxy address of the Reclaim contract}` to upgrade the contract
 - `npm run prettier` to lint your solidity files
 
-## Integration process
+## How the attestation is verified?
 
-- In order to integrate reclaim with verax, we created ReclaimPortal contract which inherits the AbstractPortal.
-- This portal is the entry point for the users to add their attestations to AttestationRegistery using the function attest
-- 
+
+- In order to integrate reclaim with verax, we created ReclaimPortal contract which inherits the verax/AbstractPortal.
+- This portal is the entry point for the users to add their attestations to `AttestationRegistery` using the function `attest`
+- This function takes `AttestationRequest` which will include a proof of their claim.
+- After that, `attest` exposes the `AttestationPayload` and `ValidationPaylaod` from the proof (Claim info to be stored publicly, and the signatures) and try to attest with the exposed info.
+- `UserMerkelizerModule` will `run()` and check the proof with the help of `Reclaim.verifyProof()`. There is logic when the user hasn't been merkelized yet then, the merkelize user action will be triggered intead of just verifying proof. *Note: merkelizing user includes verifying the proof*
+- if all above has successfully passed, the attestation will be stored and new event `AttestationRegistered(attestationId)` will be emitted. 
 
 
 
