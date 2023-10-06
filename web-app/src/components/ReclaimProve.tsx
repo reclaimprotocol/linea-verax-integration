@@ -3,7 +3,7 @@ import QRCode from 'react-qr-code'
 import { Proof } from '@reclaimprotocol/reclaim-sdk'
 import { useAccount } from 'wagmi'
 import UserMerkelizer from './UserMerkelizer'
-import { Divider, Flex, Text } from '@chakra-ui/react'
+import { Divider, Flex, HStack, Spinner, Text } from '@chakra-ui/react'
 import UserAttestator from './UserAttestator'
 
 function App () {
@@ -134,6 +134,18 @@ function App () {
           </Flex>
         )
       }
+      {!isProofReceived && isTemplateOk && (
+        <HStack flex='1' width='full' justifyContent='center'>
+          <Spinner />
+          <Text>Listening to get your proof </Text>
+        </HStack>
+      )}
+      {!isTemplateOk && (
+        <HStack flex='1' width='full' justifyContent='center'>
+          <Spinner />
+          <Text>Loading QR Code Template</Text>
+        </HStack>
+      )}
     </>
   )
 }

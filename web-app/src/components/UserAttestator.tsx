@@ -10,6 +10,7 @@ import LogsContext from '../context/LogsContext'
 export default function UserAttestator ({ proofObj }: any) {
   const { address } = useAccount()
   const [identity, setIdentity] = useState<Identity>()
+  const [enable, setEnable] = useState<boolean>(false)
   const { _logs, setLogs } = useContext(LogsContext)
 
   useEffect(() => {
@@ -48,7 +49,7 @@ export default function UserAttestator ({ proofObj }: any) {
   console.log(attestationRequest)
 
   const { config } = usePrepareContractWrite({
-    enabled: !!identity,
+    enabled: enable,
     // @ts-expect-error events
     address: process.env.NEXT_PUBLIC_RECLAIM_PORTAL_CONTRACT_ADDRESS!,
     abi: [
@@ -174,21 +175,19 @@ export default function UserAttestator ({ proofObj }: any) {
 
   return (
     <>
-      {!contractWrite.isSuccess && (
-        <>
-          <Button
-            colorScheme='primary'
-            p='10'
-            borderRadius='2xl'
-            onClick={() => {
-              contractWrite.write?.()
-            }}
-          >
-            Attest
-          </Button>
-          {contractWrite.isLoading && <Spinner />}
-        </>
-      )}
+      <Button
+        disabled={contractWrite.isSuccess}
+        colorScheme='primary'
+        p='10'
+        borderRadius='2xl'
+        onClick={() => {
+          console.log('Click pn attest')
+          setEnable(true)
+        }}
+      >
+        Attest
+      </Button>
+      {contractWrite.isLoading && <Spinner />}
     </>
   )
 }

@@ -12,6 +12,7 @@ export default function UserMerkelizer ({ proofObj }: any) {
   const { _logs, setLogs } = useContext(LogsContext)
   const [identity, setIdentity] = useState<Identity>()
   const [isPrepared, setIsPrepared] = useState(false)
+  const [enable, setEnable] = useState<boolean>(false)
 
   useEffect(() => {
     if (!identity) {
@@ -39,7 +40,7 @@ export default function UserMerkelizer ({ proofObj }: any) {
   }
 
   const { config } = usePrepareContractWrite({
-    enabled: !!identity,
+    enabled: enable,
     // @ts-expect-error events
     address: process.env.NEXT_PUBLIC_RECLAIM_CONTRACT_ADDRESS!,
     abi: RECLAIM.abi,
@@ -65,21 +66,18 @@ export default function UserMerkelizer ({ proofObj }: any) {
 
   return (
     <>
-      {!contractWrite.isSuccess && (
-        <>
-          <Button
-            colorScheme='primary'
-            p='10'
-            borderRadius='2xl'
-            onClick={() => {
-              contractWrite.write?.()
-            }}
-          >
-            Register Identity
-          </Button>
-          {contractWrite.isLoading && <Spinner />}
-        </>
-      )}
+      <Button
+        disabled={contractWrite.isSuccess}
+        colorScheme='primary'
+        p='10'
+        borderRadius='2xl'
+        onClick={() => {
+          setEnable(true)
+        }}
+      >
+        Register Identity
+      </Button>
+      {contractWrite.isLoading && <Spinner />}
     </>
   )
 }
