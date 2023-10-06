@@ -1,5 +1,5 @@
 import { Identity } from '@semaphore-protocol/identity'
-import { useAccount } from 'wagmi'
+import { useAccount, useWaitForTransaction } from 'wagmi'
 import { useContractWrite, usePrepareContractWrite } from 'wagmi'
 import RECLAIM_PORTAL from '../../contract-artifacts/ReclaimPortal.json'
 import { useEffect, useState, useContext } from 'react'
@@ -12,6 +12,7 @@ export default function UserAttestator ({ proofObj }: any) {
   const [identity, setIdentity] = useState<Identity>()
   const [enable, setEnable] = useState<boolean>(false)
   const { _logs, setLogs } = useContext(LogsContext)
+  const [isPrepared, setIsPrepared] = useState(false)
 
   useEffect(() => {
     if (!identity) {
@@ -49,7 +50,7 @@ export default function UserAttestator ({ proofObj }: any) {
   console.log(attestationRequest)
 
   const { config } = usePrepareContractWrite({
-    enabled: enable,
+    enabled: true,
     // @ts-expect-error events
     address: process.env.NEXT_PUBLIC_RECLAIM_PORTAL_CONTRACT_ADDRESS!,
     abi: [
@@ -164,30 +165,47 @@ export default function UserAttestator ({ proofObj }: any) {
     chainId: 420,
     onSuccess (data) {
       console.log('Successful - register prepare: ', data)
-      setLogs('Attestation Registered')
+      setIsPrepared(true)
     },
     onError (error) {
       setLogs('Something went wrong')
     }
   })
 
-  const contractWrite = useContractWrite(config)
+  const { data, write, isLoading } = useContractWrite(config)
+  const waitForTransaction = useWaitForTransaction({
+    hash: data?.hash,
+    onSettled (data, error) {
+      const response = data ? data.logs[0].topics[1] : []
+      console.log('Settled', response)
+      setLogs(
+        'Attestation has been saved to contract.. attestationId: ' + response
+      )
+    }
+  })
 
   return (
     <>
-      <Button
-        disabled={contractWrite.isSuccess}
-        colorScheme='primary'
-        p='10'
-        borderRadius='2xl'
-        onClick={() => {
-          console.log('Click pn attest')
-          setEnable(true)
-        }}
-      >
-        Attest
-      </Button>
-      {contractWrite.isLoading && <Spinner />}
+      {isPrepared ? (
+        <Button
+          colorScheme='primary'
+          p='10'
+          borderRadius='2xl'
+          disabled={!isPrepared}
+          onClick={() => {
+            write?.()
+            if (isPrepared) {
+            }
+          }}
+        >
+          Attest
+        </Button>
+      ) : (
+        <>
+          <Spinner />
+        </>
+      )}
+      {isLoading && <Spinner />}
     </>
   )
 }

@@ -12,7 +12,7 @@ export default function UserMerkelizer ({ proofObj }: any) {
   const { _logs, setLogs } = useContext(LogsContext)
   const [identity, setIdentity] = useState<Identity>()
   const [isPrepared, setIsPrepared] = useState(false)
-  const [enable, setEnable] = useState<boolean>(false)
+  const [error, setError] = useState<boolean>(false)
 
   useEffect(() => {
     if (!identity) {
@@ -40,7 +40,7 @@ export default function UserMerkelizer ({ proofObj }: any) {
   }
 
   const { config } = usePrepareContractWrite({
-    enabled: enable,
+    enabled: true,
     // @ts-expect-error events
     address: process.env.NEXT_PUBLIC_RECLAIM_CONTRACT_ADDRESS!,
     abi: RECLAIM.abi,
@@ -50,7 +50,7 @@ export default function UserMerkelizer ({ proofObj }: any) {
     onSuccess (data) {
       console.log('Successful - register prepare: ', data)
       setIsPrepared(true)
-      setLogs('User has been merkelized successfully')
+      // setLogs('User has been merkelized successfully')
     },
     onError (error) {
       console.log('Error in verify Proof cause: ', error.cause)
@@ -59,25 +59,29 @@ export default function UserMerkelizer ({ proofObj }: any) {
       if (error.message.includes('AlreadyMerkelized')) {
         setLogs('This user is already merkelized!!!!')
       }
+      setError(true)
     }
   })
 
-  const contractWrite = useContractWrite(config)
+  const { data, write, isLoading } = useContractWrite(config)
 
   return (
     <>
       <Button
-        disabled={contractWrite.isSuccess}
-        colorScheme='primary'
+        disabled={!isPrepared}
+        onClick={() => {
+          write?.()
+          if (isPrepared) {
+            setLogs('User has been merkelized successfully')
+          }
+        }}
+        colorScheme={isPrepared ? 'primary' : 'gray'}
         p='10'
         borderRadius='2xl'
-        onClick={() => {
-          setEnable(true)
-        }}
       >
-        Register Identity
+        {isPrepared ? 'Register Identity' : 'This user is already merkelized'}
       </Button>
-      {contractWrite.isLoading && <Spinner />}
+      {isLoading && <Spinner />}
     </>
   )
 }
