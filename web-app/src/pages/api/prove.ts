@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { reclaimprotocol } from '@reclaimprotocol/reclaim-sdk'
 import { MongoClient } from 'mongodb'
+import { ethers } from 'ethers'
 
 const dbUsername = process.env.DB_USER
 const dbPassword = process.env.DB_PWD
@@ -17,9 +18,11 @@ export default async function handler (
   res: NextApiResponse
 ) {
   try {
+    const randNum = Math.random() * 100000
     const request = reclaim.requestProofs({
       title: 'Prove your lichess username',
       baseCallbackUrl: callbackBase!,
+      callbackId: ethers.parseUnits(randNum.toString(), 18).toString(),
       requestedProofs: [
         new reclaim.CustomProvider({
           provider: 'lichess-username',
