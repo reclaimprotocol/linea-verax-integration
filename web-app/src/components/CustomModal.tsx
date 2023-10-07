@@ -24,6 +24,7 @@ export function CustomModal ({ attestationId }: { attestationId: string }) {
     args: [attestationId],
     onSuccess (data) {
       setData(data as any)
+      console.log(data)
     }
   })
 
@@ -36,7 +37,7 @@ export function CustomModal ({ attestationId }: { attestationId: string }) {
         <ModalContent>
           <ModalHeader>Attestation Details</ModalHeader>
           <ModalCloseButton />
-          <ModalBody>{JSON.stringify(data)}</ModalBody>
+          {/* <ModalBody>{data}</ModalBody> */}
 
           <ModalFooter>
             <Button colorScheme='blue' mr={3} onClick={onClose}>
