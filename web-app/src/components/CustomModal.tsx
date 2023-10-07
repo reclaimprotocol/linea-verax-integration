@@ -18,7 +18,7 @@ export function CustomModal ({ attestationId }: { attestationId: string }) {
   const [data, setData] = useState(null)
   const { isError, isLoading, isSuccess } = useContractRead({
     address: '0x345ad20d8c6a84ee43d9713aee17e0f1a0183571',
-    chainId: 421,
+    chainId: 420,
     functionName: 'getAttestation',
     abi: ATTESTATION_REGISTRY.abi,
     args: [attestationId],
@@ -36,7 +36,7 @@ export function CustomModal ({ attestationId }: { attestationId: string }) {
         <ModalContent>
           <ModalHeader>Attestation Details</ModalHeader>
           <ModalCloseButton />
-          <ModalBody>{data}</ModalBody>
+          <ModalBody>{JSON.stringify(data)}</ModalBody>
 
           <ModalFooter>
             <Button colorScheme='blue' mr={3} onClick={onClose}>
