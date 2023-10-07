@@ -13,6 +13,7 @@ export default function UserMerkelizer ({ proofObj }: any) {
   const [identity, setIdentity] = useState<Identity>()
   const [isPrepared, setIsPrepared] = useState(false)
   const [error, setError] = useState<boolean>(false)
+  const [sent, setSent] = useState<boolean>(false)
 
   useEffect(() => {
     if (!identity) {
@@ -73,13 +74,18 @@ export default function UserMerkelizer ({ proofObj }: any) {
           write?.()
           if (isPrepared) {
             setLogs('User has been merkelized successfully')
+            setSent(true)
           }
         }}
         colorScheme={isPrepared ? 'primary' : 'gray'}
         p='10'
         borderRadius='2xl'
       >
-        {isPrepared ? 'Register Identity' : 'This user is already merkelized'}
+        {isPrepared
+          ? !sent
+            ? 'Register Identity'
+            : 'User has been merkelized successfully!'
+          : 'This user is already merkelized'}
       </Button>
       {isLoading && <Spinner />}
     </>

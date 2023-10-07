@@ -6,6 +6,7 @@ import { useEffect, useState, useContext } from 'react'
 import { ethers } from 'ethers'
 import { Button, Spinner } from '@chakra-ui/react'
 import LogsContext from '../context/LogsContext'
+import { CustomModal } from './CustomModal'
 
 export default function UserAttestator ({ proofObj }: any) {
   const { address } = useAccount()
@@ -13,6 +14,7 @@ export default function UserAttestator ({ proofObj }: any) {
   const [enable, setEnable] = useState<boolean>(false)
   const { _logs, setLogs } = useContext(LogsContext)
   const [isPrepared, setIsPrepared] = useState(false)
+  const [attestationId, setAttestationId] = useState(null)
 
   useEffect(() => {
     if (!identity) {
@@ -181,6 +183,7 @@ export default function UserAttestator ({ proofObj }: any) {
       setLogs(
         'Attestation has been saved to contract.. attestationId: ' + response
       )
+      setAttestationId(response as any)
     }
   })
 
@@ -206,6 +209,7 @@ export default function UserAttestator ({ proofObj }: any) {
         </>
       )}
       {isLoading && <Spinner />}
+      {attestationId && <CustomModal attestationId={attestationId} />}
     </>
   )
 }
