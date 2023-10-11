@@ -5,7 +5,8 @@ EVM smart contract that enables the users to attest anonymously their claims wit
 ## Setup
 
 1. Run `npm install --legacy-peer-deps`
-2. To test, `npm run test`
+2. create `.env` file same as `.env.example` and fill `NETWORK`, `PRIVATE_KEY`, and `ALCHEMY_API_KEY` at least.
+3. To test, `npm run test`
 
 ## Contracts Addresses
 
