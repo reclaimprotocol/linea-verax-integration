@@ -39,10 +39,10 @@ export default async function handler (
     console.log('[B-Request-P -- TEMP] -- Template: ', template)
     console.log('[B-Request-P -- TEMP] -- Id: ', id)
     console.log('[B-Request-P -- TEMP] -- ReclaimUrl: ', reclaimUrl)
-    res.send({ reclaimUrl, callbackId })
     const db = client.db()
     const callbackCollection = db.collection('reclaim')
     await callbackCollection.insertOne({ callbackId: callbackId, proofs: [] })
+    res.send({ reclaimUrl, callbackId })
   } catch (error: any) {
     console.error(error)
 

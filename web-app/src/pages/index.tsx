@@ -42,23 +42,23 @@ export default function IdentitiesPage () {
     setLogs('Give  Proof for your lichess username claim👆🏽')
   }, [isConnected, address])
 
-  const generateProof = async () => {
-    setLogs('Generating proofs..')
-    const context = address + 'other specific data'
-    const parameters = JSON.stringify({ username: userName })
-    const provider = 'lichess_username'
-    const response = await fetch('api/prove', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ address, context, parameters, provider })
-    })
-    const res = await response.json()
-    setProof(res)
-    setTimeout(() => {
-      setLogs('The proofs have been stored')
-      setIsFinishedGenerating(true)
-    }, 2000)
-  }
+  // const generateProof = async () => {
+  //   setLogs('Generating proofs..')
+  //   const context = address + 'other specific data'
+  //   const parameters = JSON.stringify({ username: userName })
+  //   const provider = 'lichess_username'
+  //   const response = await fetch('api/prove', {
+  //     method: 'POST',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     body: JSON.stringify({ address, context, parameters, provider })
+  //   })
+  //   const res = await response.json()
+  //   setProof(res)
+  //   setTimeout(() => {
+  //     setLogs('The proofs have been stored')
+  //     setIsFinishedGenerating(true)
+  //   }, 2000)
+  // }
 
   const handleAttest = async () => {
     const idCommitment = _identity?.commitment.toString()
